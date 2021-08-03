@@ -1,20 +1,26 @@
 import { Octokit } from "@octokit/core";
 import express from 'express';
+import bodyParser from 'body-parser';
+import type { MigrateRequest } from "./types";
 
-const app = express()
+const app = express();
+app.use(bodyParser.json());
 app.listen(3000);
-
-app.get('/', async (request, response) => {
-    await getGithubIssuesFrom("olxbr", "squad-aluguel").then(result => {
-        // console.log(result);
+ 
+app.post('/migrate', async (request: MigrateRequest, response) => {
+    await getGithubIssuesFrom(
+        request.body.github.organization_name, 
+        request.body.github.repo_name, 
+        request.body.github.auth
+    ).then(result => {
         response.status(200).json({ message: result}); 
     }).catch(err => {
         response.status(err.response.status).json({ message: err.response.data.message});
     });
 });
 
-async function getGithubIssuesFrom(ownerName: string, repoName: string): Promise<JSON> {
-    const octokit = new Octokit({ auth: "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"});
+async function getGithubIssuesFrom(ownerName: string, repoName: string, githubAuth: string): Promise<JSON> {
+    const octokit = new Octokit({ auth: githubAuth});
 
     const response = await octokit.request("GET /repos/{owner}/{repo}/issues?state={issueState}&per_page={itemsPerPage}&page={pageIndex}", {
         owner: ownerName,
