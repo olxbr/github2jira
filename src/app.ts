@@ -8,7 +8,7 @@ const app = express();
 app.use(bodyParser.json());
 app.listen(3000);
  
-app.post(constants.MIGRATE_POST_PATH, async (request: MigrateRequest, response) => {
+app.post(constants.MIGRATE_POST_PATH, async (request: MigrateRequest, response: any) => {
     await getAllGithubIssuesFrom(
         request.body.github.organization_name, 
         request.body.github.repo_name, 
@@ -46,8 +46,15 @@ async function getAllGithubIssuesFrom(ownerName: string, repoName: string, githu
             result = response.data;
         }
         page++;
-    } while ((response.data as unknown as [any]).length == constants.GITHUB_REPO_ISSUES_PARAMS_ITEMS_PER_PAGE as unknown as number);
+    } while ((response.data as Array<JSON>).length == Number(constants.GITHUB_REPO_ISSUES_PARAMS_ITEMS_PER_PAGE));
 
-    return result;
+    return removePullRequests(result);
 }
 
+function removePullRequests(githubResult: Array<any>): any {
+    return githubResult.map(issue => {
+        if (!issue.pull_request) {
+            return issue;
+        }
+    });
+}
