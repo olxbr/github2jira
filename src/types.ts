@@ -1,6 +1,6 @@
 export type MigrateRequest = {
     body: MigrateBody;
-}
+};
 
 type MigrateBody =  { 
     since: string | void; // YYYY-MM-DDTHH:MM:SSZ
