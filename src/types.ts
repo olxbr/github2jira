@@ -12,7 +12,7 @@ type MigrateBody =  {
     jira: {
         teste: string;
     }
-    user_convertion: {
+    user_mapping: {
         teste: string;
     }
 };

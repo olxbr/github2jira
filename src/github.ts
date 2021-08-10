@@ -1,8 +1,22 @@
 import { Octokit } from "@octokit/core";
 import { constants } from "./constants";
+import { MigrateRequest } from "./types";
 
 export module Github {
-    export async function getAllGithubIssuesFrom(ownerName: string, repoName: string, githubAuth: string, since: string | void): Promise<JSON> {
+    export async function githubIssuesHandler(request: MigrateRequest, response: any) {
+        await getAllGithubIssuesFrom(
+            request.body.github.organization_name, 
+            request.body.github.repo_name, 
+            request.body.github.auth, 
+            request.body.since
+        ).then(result => {
+            response.status(200).json({ message: result}); 
+        }).catch(err => {
+            response.status(err.response.status).json({ message: err.response.data.message});
+        });
+    }
+
+    async function getAllGithubIssuesFrom(ownerName: string, repoName: string, githubAuth: string, since: string | void): Promise<JSON> {
         const octokit = new Octokit({ auth: githubAuth});
     
         let response = null, page = 1, result = null, path = constants.GITHUB_GET_REPO_ISSUES_PATH;
