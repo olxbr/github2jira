@@ -12,5 +12,5 @@ export const constants = {
     JIRA_HOST: "olxbr.atlassian.net",
     JIRA_ALL_ISSUES_PART_I: "/jira/software/c/projects/",
     JIRA_ALL_ISSUES_PART_II: "/issues/?filter=allissues",
-    JIRA_MIGRATION_message: "migrate at: https://olxbr.atlassian.net/secure/CsvSetupPage!default.jspa?externalSystem=com.atlassian.jira.plugins.jim-plugin%3AcsvImporter&nonImporter=noneOfThese&onboarding=true \n\ndate format: yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+    JIRA_MIGRATION_message: "migrate at: https://olxbr.atlassian.net/secure/CsvSetupPage!default.jspa?externalSystem=com.atlassian.jira.plugins.jim-plugin%3AcsvImporter&nonImporter=noneOfThese&onboarding=true \n\ndate format: yyyy-MM-dd'T'HH:mm:ss'Z'",
 };

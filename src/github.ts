@@ -16,7 +16,7 @@ export module Github {
         });
     }
 
-    async function getAllGithubIssuesFrom(ownerName: string, repoName: string, githubAuth: string, since: string | void): Promise<JSON> {
+    export async function getAllGithubIssuesFrom(ownerName: string, repoName: string, githubAuth: string, since: string | void): Promise<JSON> {
         const octokit = new Octokit({ auth: githubAuth});
     
         let response = null, page = 1, result = null, path = constants.GITHUB_GET_REPO_ISSUES_PATH;
@@ -47,10 +47,6 @@ export module Github {
     }
     
     function removePullRequests(githubResult: Array<any>): any {
-        return githubResult.map(issue => {
-            if (!issue.pull_request) {
-                return issue;
-            }
-        });
+        return githubResult.filter(issue => !issue.pull_request);
     }
 }

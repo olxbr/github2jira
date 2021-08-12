@@ -2,8 +2,8 @@ export type MigrateRequest = {
     body: MigrateBody;
 };
 
-type MigrateBody =  { 
-    since: string | void; // YYYY-MM-DDTHH:MM:SSZ
+export type MigrateBody =  { 
+    since: string | void; // YYYY-MM-DD'T'HH:MM:SS'Z'
     github: { 
         organization_name: string; 
         repo_name: string; 
@@ -12,7 +12,10 @@ type MigrateBody =  {
     jira: {
         teste: string;
     }
-    user_mapping: {
-        teste: string; // jira user id
-    }
+    user_mapping: [
+        {
+            github: string;
+            jira: string; // jira user id
+        } 
+    ]
 };
