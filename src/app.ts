@@ -30,4 +30,4 @@ app.get(constants.MIGRATE_GITHUB_GET_ISSUES_PATH, Github.getAllIssuesHandler);
 
 // Jira support methods
 // app.post(constants.MIGRATE_JIRA_BULK_CREATE_PATH, Jira.bulkCreateHandler)
-// app.get(constants.MIGRATE_JIRA_GET_ISSUE_DETAIL_PATH, Jira.getIssueDetailHandler);
+app.get(constants.MIGRATE_JIRA_GET_ISSUE_DETAIL_PATH, Jira.getIssueDetailHandler);

@@ -75,7 +75,7 @@ export module Jira {
         });
 
         await jiraClient.issue.getIssue({
-            issueKey: "REN-33",
+            issueKey: "TOW-50",
         }).then(issue => {
             console.log(issue);
             return;

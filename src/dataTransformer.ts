@@ -30,13 +30,15 @@ export module DataTransformer {
                     labels: labels ? labels : [],
                     reporter: {
                         id: reporter ? reporter.jira : ""
-                    }
+                    }, 
+                    description: issue.body ? issue.body : ""
                 },
                 status: {
                     name: issue.state == "closed" ? "Done" : "Backlog",
                 },
                 created: issue.created_at,
                 resolved: issue.closed_at,
+                resolution: issue.state == "closed" ? "Done" : ""
             }
             return issueJSON;
         });
