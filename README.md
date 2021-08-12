@@ -60,6 +60,16 @@ This is not a pet project and it was my first node/typescritp adventure! So, fee
   ```bash
   $ npm install
   ```
+## Dependences 
+- Dev:
+    - [ts-node-dev 1.1.8](https://www.npmjs.com/package/ts-node-dev)
+    - [typescript 4.3.5](https://www.npmjs.com/package/typescript)
+    
+- Others:
+    - [@octokit 3.5.1](https://www.npmjs.com/package/@octokit/core)
+    - [body-parser 1.19.0](https://www.npmjs.com/package/body-parser)
+    - [express 4.17.1](https://www.npmjs.com/package/express)
+    - [jira-connector 3.1.0](https://www.npmjs.com/package/jira-connector)
 
 ## How to use
 
