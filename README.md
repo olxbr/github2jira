@@ -77,3 +77,22 @@ This is not a pet project and it was my first node/typescritp adventure! So, fee
   ```bash
   npm run dev
   ```
+2. Just use it. [DOCUMENTATION](https://documenter.getpostman.com/view/797179/Tzz7Mcq9) 
+
+### POST Migrate
+
+Main method that should migrate the data. But due JIRA's API limitations for the migration process, this method just return the data to use with [JIRA's Migration "Wizard"](https://olxbr.atlassian.net/secure/CsvSetupPage!default.jspa?externalSystem=com.atlassian.jira.plugins.jim-plugin%3AcsvImporter&nonImporter=noneOfThese&onboarding=true). 
+
+1. Prepare body-request 
+2. Use POST Migrate
+3. Copy JSON Response
+4. Convert to CSV ([possible converter to use](http://convertcsv.com/json-to-csv.htm))
+5. Use [JIRA's Migration "Wizard"](https://olxbr.atlassian.net/secure/CsvSetupPage!default.jspa?externalSystem=com.atlassian.jira.plugins.jim-plugin%3AcsvImporter&nonImporter=noneOfThese&onboarding=true)
+    1. File import
+        1. Upload CSV file
+    2. Setup
+        1. Select the JIRA's project to import 
+        2. Set date format to `yyyy-MM-dd'T'HH:mm:ss'Z'`
+    3. Fields 
+        1. Map desired fields (attention to duplicated fields in Custom Fields)
+        2. Summary field is mandatory to start the import process.
