@@ -2,8 +2,11 @@
 
 Application [Node.js + Typescript] to support Github issues to Jira.
 
-### What the application does and doesn’t:
----
+## ATTENTION PLEASE!!!
+
+This is not a pet project and it was my first node/typescritp adventure! So, feel free to share some feedbacks and also improve this thing.
+
+## What the application does and doesn’t:
 
 - [x]  Get Github issues
     - [x]  Optionally filtered by date (not a range)
@@ -35,8 +38,7 @@ Application [Node.js + Typescript] to support Github issues to Jira.
     - [ ]  passively
     - [ ]  actively
 
-### Installation
----
+## Installation
 
  1. Cloning the project: 
 
@@ -59,8 +61,7 @@ Application [Node.js + Typescript] to support Github issues to Jira.
   $ npm install
   ```
 
-### How to use
----
+## How to use
 
 1. Starting it 
   ```bash
