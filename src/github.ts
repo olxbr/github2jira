@@ -3,7 +3,7 @@ import { constants } from "./constants";
 import { MigrateRequest } from "./types";
 
 export module Github {
-    export async function githubIssuesHandler(request: MigrateRequest, response: any) {
+    export async function getAllIssuesHandler(request: MigrateRequest, response: any) {
         await getAllGithubIssuesFrom(
             request.body.github.organization_name, 
             request.body.github.repo_name, 

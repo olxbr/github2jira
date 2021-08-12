@@ -13,6 +13,6 @@ type MigrateBody =  {
         teste: string;
     }
     user_mapping: {
-        teste: string;
+        teste: string; // jira user id
     }
 };
