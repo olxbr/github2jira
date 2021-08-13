@@ -26,8 +26,8 @@ export module Jira {
         const jiraClient = new JiraClient({
             host: constants.JIRA_HOST,
             basic_auth: {
-                email: "gabriel.pacheco@olxbr.com",
-                api_token: "8uLMgAmayF1lsUt8DRK1742C"
+                email: "user_email",
+                api_token: "JIRA_API_TOKEN"
             }
         });
         await jiraClient.issue.bulkCreate({
@@ -69,8 +69,8 @@ export module Jira {
         const jiraClient = new JiraClient({
             host: constants.JIRA_HOST,
             basic_auth: {
-                email: "gabriel.pacheco@olxbr.com",
-                api_token: "8uLMgAmayF1lsUt8DRK1742C"
+                email: "user_email",
+                api_token: "JIRA_API_TOKEN"
             }
         });
 
