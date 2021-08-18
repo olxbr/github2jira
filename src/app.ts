@@ -16,7 +16,8 @@ app.post(constants.MIGRATE_POST_PATH, async (request: MigrateRequest, response: 
         request.body.github.organization_name, 
         request.body.github.repo_name, 
         request.body.github.auth, 
-        request.body.since
+        request.body.github.since, 
+        request.body.github.state
     ).then(result => {
         const jiraIssues = DataTransformer.githubIssuesToJSON(result, request.body);
         response.status(200).json(jiraIssues); 

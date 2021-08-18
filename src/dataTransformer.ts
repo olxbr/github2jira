@@ -7,10 +7,21 @@ export module DataTransformer {
             const labels = labelsObjects.map((label: any) => {
                 return label.name;
             });
-            const issueType = labels.indexOf("bug") >= 0 ? "Bug" : "Story";
+            
+            const bugTag = migrateBody.github.bug_tag;
+            const epicTag = migrateBody.github.epic_tag;
+            var issueType = "Story";
+            if (bugTag) {
+                issueType = labels.indexOf(bugTag) >= 0 ? "Bug" : issueType;
+            }
+            if (epicTag) {
+                issueType = labels.indexOf(epicTag) >= 0 ? "Epic" : issueType;
+            }
+
             const reporter = migrateBody.user_mapping.find((user: any) => {
                 return user.github == issue.user.login;
             });
+            
             var assignee = null;
             if (issue.assignee){
                 assignee = migrateBody.user_mapping.find((user: any) => {
