@@ -4,8 +4,8 @@ import JiraClient from "jira-connector";
 
 export module Jira {
     export async function bulkCreateHandler(request: MigrateRequest, response: any) {
-        await createJIRAIssues().then(result => {
-            const url = "https://" + constants.JIRA_HOST + constants.JIRA_ALL_ISSUES_PART_I + "REN" + constants.JIRA_ALL_ISSUES_PART_II
+        await createJIRAIssues(request.body.jira.user_email, request.body.jira.user_api_token, request.body.jira.project_key).then(result => {
+            const url = "https://" + constants.JIRA_HOST + constants.JIRA_ALL_ISSUES_PART_I + request.body.jira.project_key + constants.JIRA_ALL_ISSUES_PART_II
             response.status(200).json({
                 message: "Yeah! Look on " + url
             });
@@ -15,19 +15,20 @@ export module Jira {
     }
 
     export async function getIssueDetailHandler(request: MigrateRequest, response: any) {
-        await getIssueDetail().then(result => {
+        await getIssueDetail(request.body.jira.user_email, request.body.jira.user_api_token, request.body.jira.issue_key).then(result => {
             response.status(200).json({message: result});
         }).catch(err => {
+            console.log(err);
             response.status(err.statusCode).json({message: err.body});
         })
     }
 
-    async function createJIRAIssues(): Promise<any> {
-        const jiraClient = new JiraClient({
-            host: constants.JIRA_HOST,
+    async function createJIRAIssues(userEmail: string, apiToken: string, projectKey: string): Promise<any> {
+    const jiraClient = new JiraClient({
+        host: constants.JIRA_HOST,
             basic_auth: {
-                email: "user_email",
-                api_token: "JIRA_API_TOKEN"
+                email: userEmail,
+                api_token: apiToken
             }
         });
         await jiraClient.issue.bulkCreate({
@@ -35,7 +36,7 @@ export module Jira {
                 {
                     fields: {
                         project: {
-                            key: "REN",
+                            key: projectKey,
                         },
                         summary: "TEST API PACHECO 01",
                         issuetype: {
@@ -65,17 +66,17 @@ export module Jira {
         });
     }
 
-    async function getIssueDetail() {
+    async function getIssueDetail(userEmail: string, apiToken: string, issueKey: string) {
         const jiraClient = new JiraClient({
             host: constants.JIRA_HOST,
             basic_auth: {
-                email: "user_email",
-                api_token: "JIRA_API_TOKEN"
+                email: userEmail,
+                api_token: apiToken
             }
         });
 
         await jiraClient.issue.getIssue({
-            issueKey: "TOW-50",
+            issueKey: issueKey,
         }).then(issue => {
             console.log(issue);
             return;
