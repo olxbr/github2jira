@@ -1,10 +1,10 @@
-import type { MigrateRequest } from "./types";
-import { constants } from "./constants";
-import express from 'express';
 import bodyParser from 'body-parser';
+import express from 'express';
+import { constants } from "./constants";
+import { DataTransformer } from "./dataTransformer";
 import { Github } from './github';
 import { Jira } from "./jira";
-import { DataTransformer } from "./dataTransformer";
+import type { MigrateRequest } from "./types";
 
 const app = express();
 app.use(bodyParser.json());
@@ -19,7 +19,7 @@ app.post(constants.MIGRATE_POST_PATH, async (request: MigrateRequest, response: 
         request.body.github.since, 
         request.body.github.state
     ).then(result => {
-        const jiraIssues = DataTransformer.githubIssuesToJSON(result, request.body);
+        let jiraIssues = DataTransformer.githubIssuesToJSON(result, request.body);
         response.status(200).json(jiraIssues); 
     }).catch(err => {
         response.status(err.response.status).json({ message: err.response.data.message});

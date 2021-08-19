@@ -3,22 +3,16 @@ import type { MigrateBody } from "./types"
 export module DataTransformer {
     export function githubIssuesToJSON(githubIssues: any, migrateBody: MigrateBody): any {
         return githubIssues.map((issue: any) => {
-            const labelsObjects = (issue.labels as Array<any>)
-            const labels = labelsObjects.map((label: any) => {
+            let labelsObjects = (issue.labels as Array<any>)
+            var labels = labelsObjects.map((label: any) => {
                 return label.name;
             });
             
-            const bugTag = migrateBody.github.bug_tag;
-            const epicTag = migrateBody.github.epic_tag;
-            var issueType = "Story";
-            if (bugTag) {
-                issueType = labels.indexOf(bugTag) >= 0 ? "Bug" : issueType;
-            }
-            if (epicTag) {
-                issueType = labels.indexOf(epicTag) >= 0 ? "Epic" : issueType;
-            }
+            let issueType = getIssueType(labels, migrateBody.github.bug_tag, migrateBody.github.epic_tag);
+            
+            labels = labels.concat(getLabelsFromTitle(issue.title));
 
-            const reporter = migrateBody.user_mapping.find((user: any) => {
+            let reporter = migrateBody.user_mapping.find((user: any) => {
                 return user.github == issue.user.login;
             });
             
@@ -29,7 +23,7 @@ export module DataTransformer {
                 });
             }
             
-            const issueJSON = {
+            let issueJSON = {
                 fields: {
                     summary: issue.title,
                     issuetype: {
@@ -53,5 +47,22 @@ export module DataTransformer {
             }
             return issueJSON;
         });
+    }
+
+    function getIssueType(labels: Array<string>, bugTag: string, epicTag: string): string {
+    var issueType = "Story";
+            if (bugTag) {
+                issueType = labels.indexOf(bugTag) >= 0 ? "Bug" : issueType;
+            }
+            if (epicTag) {
+                issueType = labels.indexOf(epicTag) >= 0 ? "Epic" : issueType;
+            }
+        return issueType;
+    }
+
+    function getLabelsFromTitle(title: string): Array<string> {
+        let newLabels = [];
+        newLabels = title.match(/(?<=\[).+?(?=\])/g);
+        return newLabels ? newLabels : [];
     }
 }

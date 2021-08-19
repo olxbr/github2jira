@@ -5,7 +5,7 @@ import JiraClient from "jira-connector";
 export module Jira {
     export async function bulkCreateHandler(request: MigrateRequest, response: any) {
         await createJIRAIssues(request.body.jira.user_email, request.body.jira.user_api_token, request.body.jira.project_key).then(result => {
-            const url = "https://" + constants.JIRA_HOST + constants.JIRA_ALL_ISSUES_PART_I + request.body.jira.project_key + constants.JIRA_ALL_ISSUES_PART_II
+            let url = "https://" + constants.JIRA_HOST + constants.JIRA_ALL_ISSUES_PART_I + request.body.jira.project_key + constants.JIRA_ALL_ISSUES_PART_II
             response.status(200).json({
                 message: "Yeah! Look on " + url
             });
