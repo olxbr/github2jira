@@ -27,6 +27,7 @@ This is not a pet project and it was my first node/typescritp adventure! So, fee
         - [x]  Resolved at
         - [x]  Closed or Open
         - [ ]  Board current status
+    - [ ]  Create sub-task using description's checklist. 
 
 - [x]  Export data
     - [x]  JSON
@@ -35,8 +36,8 @@ This is not a pet project and it was my first node/typescritp adventure! So, fee
 - [ ]  Migrate data to Jira (NOTE: Sadly this feature was note possible due JIRA's API limitations.) 
 
 - [ ]  Sincronize Jira's issues with Github updates (current status)
-    - [ ]  passively
-    - [ ]  actively
+    - [ ] update columns ands status
+    - [ ] create new issues
 
 ## Installation
 
