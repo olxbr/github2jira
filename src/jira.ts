@@ -25,20 +25,31 @@ export module Jira {
                 version: 3
         });
 
-        let result = await jiraClient.search.search({
-            method: "POST",
-            jql: "project = " + projectKey + " ORDER BY created ASC",
-            maxResults: 10,
-            startAt: 0,
-            fields: [
-                "summary",
-                "description"
-            ]
-        }).catch(err => {
-            throw JSON.parse(err);
-        });
+        let response = null, result = null, page = 0, range = Number(constants.ISSUES_PARAMS_ITEMS_PER_PAGE);
+        
+        do {
+            response = await jiraClient.search.search({
+                method: "POST",
+                jql: "project = " + projectKey + " ORDER BY created ASC",
+                maxResults: range,
+                startAt: page,
+                fields: [
+                    "summary",
+                    "description"
+                ]
+            }).catch(err => {
+                throw JSON.parse(err);
+            });
 
-        return result.issues;
+            if (result) {
+                result = result.concat(response.issues);
+            } else {
+                result = response.issues;
+            }
+            page = page + range;
+        } while (response.issues.length == Number(constants.ISSUES_PARAMS_ITEMS_PER_PAGE));
+        
+        return result;
     }
 
     async function getIssueDetail(userEmail: string, apiToken: string, issueKey: string): Promise<any> {

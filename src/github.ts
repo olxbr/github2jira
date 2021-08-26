@@ -30,7 +30,7 @@ export module Github {
                 owner: ownerName,
                 repo: repoName,
                 issueState: state,
-                itemsPerPage: constants.GITHUB_REPO_ISSUES_PARAMS_ITEMS_PER_PAGE,
+                itemsPerPage: constants.ISSUES_PARAMS_ITEMS_PER_PAGE,
                 pageIndex: String(page)
             }).catch(err => {
                 throw err;
@@ -42,7 +42,7 @@ export module Github {
                 result = response.data;
             }
             page++;
-        } while ((response.data as Array<JSON>).length == Number(constants.GITHUB_REPO_ISSUES_PARAMS_ITEMS_PER_PAGE));
+        } while ((response.data as Array<JSON>).length == Number(constants.ISSUES_PARAMS_ITEMS_PER_PAGE));
     
         return removePullRequests(result);
     }
@@ -55,7 +55,7 @@ export module Github {
         do {
             response = await octokit.request(path, {
                 column_id: columnId,
-                itemsPerPage: constants.GITHUB_REPO_ISSUES_PARAMS_ITEMS_PER_PAGE,
+                itemsPerPage: constants.ISSUES_PARAMS_ITEMS_PER_PAGE,
                 pageIndex: String(page),
                 mediaType: {
                   previews: [
@@ -74,7 +74,7 @@ export module Github {
             }
 
             page++;
-        } while ((response.data as Array<JSON>).length == Number(constants.GITHUB_REPO_ISSUES_PARAMS_ITEMS_PER_PAGE));
+        } while ((response.data as Array<JSON>).length == Number(constants.ISSUES_PARAMS_ITEMS_PER_PAGE));
 
         return result;
     }

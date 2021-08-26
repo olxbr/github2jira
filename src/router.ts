@@ -58,10 +58,20 @@ export module Router {
             request.body.jira.user_email,
             request.body.jira.user_api_token,
             request.body.jira.project_key
-        ).then((issues: any) => {
-            response.status(200).json(issues);
-        }).catch(err => {
+        ).catch(err => {
             response.status(err.statusCode).json({message: err.body});
         })
+
+        let githubIssues = await Github.getAllGithubIssuesWith(
+            request.body.github.organization_name, 
+            request.body.github.repo_name, 
+            request.body.github.auth, 
+            request.body.github.since, 
+            request.body.github.state
+        ).catch(err => {
+            response.status(err.response.status).json({ message: err.response.data.message});
+        });
+
+        response.status(200).json(jiraIssues);
     }
 }
