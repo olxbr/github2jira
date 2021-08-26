@@ -1,4 +1,5 @@
-import type { MigrateBody } from "./types"
+import type { MigrateBody } from "./types";
+import mdTranslator from 'md-to-adf';
 
 export module DataTransformer {
     export function githubIssuesToJSON(githubIssues: any, migrateBody: MigrateBody, githubColumnsIssues: any): any {
@@ -66,6 +67,11 @@ export module DataTransformer {
             }
             return issueJSON;
         });
+    }
+
+    export function updateJiraIssuesDescription(jiraIssues: Array<any>, githubIssues: Array<any>): Array<any> {
+        let jsonMD = mdTranslator("");
+        return [];
     }
 
     function getIssueType(labels: Array<string>, bugTag: string, epicTag: string): string {
