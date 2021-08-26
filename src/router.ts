@@ -53,5 +53,15 @@ export module Router {
         });
     }
 
-
+    export async function updateJiraIssuesDescriptionsHandler(request: MigrateRequest, response: any) {
+        let jiraIssues = await Jira.getAllIssuesFrom(
+            request.body.jira.user_email,
+            request.body.jira.user_api_token,
+            request.body.jira.project_key
+        ).then((issues: any) => {
+            response.status(200).json(issues);
+        }).catch(err => {
+            response.status(err.statusCode).json({message: err.body});
+        })
+    }
 }

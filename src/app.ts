@@ -16,5 +16,5 @@ app.post(constants.MIGRATE_POST_PATH, Router.migrationJSONHandler);
 app.get(constants.MIGRATE_GITHUB_GET_ISSUES_PATH, Github.getAllIssuesHandler);
 
 // Jira support methods
-app.put(constants.MIGRATE_JIRA_BULK_UPDATE_PATH, Jira.bulkUpdateHandler);
+app.put(constants.MIGRATE_JIRA_BULK_UPDATE_PATH, Router.updateJiraIssuesDescriptionsHandler);
 app.get(constants.MIGRATE_JIRA_GET_ISSUE_DETAIL_PATH, Jira.getIssueDetailHandler);
