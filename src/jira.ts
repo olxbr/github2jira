@@ -1,7 +1,6 @@
 import { constants } from "./constants";
 import { MigrateRequest } from "./types";
 import JiraClient from "jira-connector";
-import { IssueResponse, SearchResult } from "jira-connector/types/api";
 
 export module Jira {
     export async function getIssueDetailHandler(request: MigrateRequest, response: any) {
