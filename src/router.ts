@@ -1,5 +1,4 @@
-import { MigrateRequest } from "./types";
-import { MigrateMapping } from "./types";
+import { MigrateRequest, MigrateMapping } from "./types";
 import { Github } from "./github";
 import { Jira } from "./jira";
 import { DataTransformer } from "./dataTransformer";
