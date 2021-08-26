@@ -3,7 +3,7 @@ import { MigrateRequest } from "./types";
 import JiraClient from "jira-connector";
 
 export module Jira {
-    export async function bulkCreateHandler(request: MigrateRequest, response: any) {
+    export async function bulkUpdateHandler(request: MigrateRequest, response: any) {
         await createJIRAIssues(request.body.jira.user_email, request.body.jira.user_api_token, request.body.jira.project_key).then(result => {
             let url = "https://" + constants.JIRA_HOST + constants.JIRA_ALL_ISSUES_PART_I + request.body.jira.project_key + constants.JIRA_ALL_ISSUES_PART_II
             response.status(200).json({
@@ -24,13 +24,16 @@ export module Jira {
     }
 
     async function createJIRAIssues(userEmail: string, apiToken: string, projectKey: string): Promise<any> {
-    const jiraClient = new JiraClient({
-        host: constants.JIRA_HOST,
-            basic_auth: {
-                email: userEmail,
-                api_token: apiToken
-            }
+        const jiraClient = new JiraClient({
+            host: constants.JIRA_HOST,
+                basic_auth: {
+                    email: userEmail,
+                    api_token: apiToken
+                },
+                version: 3
         });
+        let description = '{"type":"doc","content":[{"type":"heading","content":[{"type":"text","text":"O que"}],"attrs":{"level":2}},{"type":"paragraph","content":[{"type":"text","text":"Como o endosso e análise de crédito são altamente dependentes, precisamos garantir que os dados usados na análise são sempre os mesmos usados para o endosso. Hoje a análise de crédito está armazenando todos os dados do anúncio assim que é criada Precisamos alterar no endosso para usar os dados da análise de crédito também, pois hoje estamos usando o que está no anúncio, que pode levar a inconsistências no futuro"}]},{"type":"heading","content":[{"type":"text","text":"Casio"}],"attrs":{"level":3}},{"type":"bulletList","content":[{"type":"listItem","content":[{"type":"paragraph","content":[{"type":"text","text":"[ ] TODO"}]}]}]},{"type":"heading","content":[{"type":"text","text":"Criterios de aceite"}],"attrs":{"level":2}},{"type":"bulletList","content":[{"type":"listItem","content":[{"type":"paragraph","content":[{"type":"text","text":"[ ] Garantir que os mesmos dados utilizados na análise de crédito são utilizado para envio de endosso"}]}]}]}],"version":1}'
+        
         await jiraClient.issue.bulkCreate({
             "issueUpdates": [
                 {
@@ -60,7 +63,8 @@ export module Jira {
                 }
             ]
         }).then(issues => {
-            return JSON.parse(issues);
+            console.log(issues);
+            return;
         }).catch(err => {
             throw JSON.parse(err);
         });

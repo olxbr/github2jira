@@ -11,6 +11,11 @@ export type MigrateBody =  {
         epic_tag: string;
         since: string | void; // YYYY-MM-DD'T'HH:MM:SS'Z'
         state: string | void; // all, open and closed
+        priorities: {
+            high: string;
+            medium: string;
+            low: string;
+        }
     }; 
     jira: {
         user_email: string;
@@ -19,9 +24,14 @@ export type MigrateBody =  {
         issue_key: string;
     };
     user_mapping: [
-        {
-            github: string;
-            jira: string; // jira user id
-        } 
+        MigrateMapping
     ];
+    status_mapping: [
+        MigrateMapping
+    ]
+};
+
+export type MigrateMapping = {
+    github: string;
+    jira: string;
 };

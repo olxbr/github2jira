@@ -4,31 +4,21 @@ import { constants } from "./constants";
 import { DataTransformer } from "./dataTransformer";
 import { Github } from './github';
 import { Jira } from "./jira";
-import type { MigrateRequest } from "./types";
+import { Router } from "./router";
 
 const app = express();
 app.use(bodyParser.json());
 app.listen(3000);
  
 // main method 
-app.post(constants.MIGRATE_POST_PATH, async (request: MigrateRequest, response: any) => {
-    await Github.getAllGithubIssuesFrom(
-        request.body.github.organization_name, 
-        request.body.github.repo_name, 
-        request.body.github.auth, 
-        request.body.github.since, 
-        request.body.github.state
-    ).then(result => {
-        let jiraIssues = DataTransformer.githubIssuesToJSON(result, request.body);
-        response.status(200).json(jiraIssues); 
-    }).catch(err => {
-        response.status(err.response.status).json({ message: err.response.data.message});
-    });
-});
+app.post(constants.MIGRATE_POST_PATH, Router.migrationJSONHandler);
 
 // Github support methods
 app.get(constants.MIGRATE_GITHUB_GET_ISSUES_PATH, Github.getAllIssuesHandler);
+// app.get(constants.MIGRATE_GITHUB_REPO_BOARD_PATH, Github.getAllGithubBoardsHandler);
+// app.get(constants.MIGRATE_GITHUB_REPO_BOARD_COLUMNS_PATH, Github.getGithubBoardColumnsHandler);
+// app.get(constants.MIGRATE_GITHUB_COLUMNS_CARD_PATH, Github.getGithubColumnsCardsHandler);
 
 // Jira support methods
-// app.post(constants.MIGRATE_JIRA_BULK_CREATE_PATH, Jira.bulkCreateHandler)
+app.put(constants.MIGRATE_JIRA_BULK_UPDATE_PATH, Jira.bulkUpdateHandler);
 app.get(constants.MIGRATE_JIRA_GET_ISSUE_DETAIL_PATH, Jira.getIssueDetailHandler);
