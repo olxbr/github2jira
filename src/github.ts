@@ -134,7 +134,7 @@ export module Github {
     export async function getGithubBoardColumnCardsWith(columnId: string, githubAuth: string): Promise<any> {
         const octokit = new Octokit({ auth: githubAuth});
         
-        let response = null, page = 1, path = constants.GITHUB_COLUMNS_CARD_PATH;
+        let response = null, result = null, page = 1, path = constants.GITHUB_COLUMNS_CARD_PATH;
         
         do {
             response = await octokit.request(path, {
@@ -150,9 +150,17 @@ export module Github {
                 console.log(err);
                 throw err;
             });
+
+            if (result) {
+                result = result.concat(response.data);
+            } else {
+                result = response.data;
+            }
+
+            page++;
         } while ((response.data as Array<JSON>).length == Number(constants.GITHUB_REPO_ISSUES_PARAMS_ITEMS_PER_PAGE));
 
-        return response.data;
+        return result;
     }
     
     function removePullRequests(githubResult: Array<any>): any {

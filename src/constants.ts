@@ -10,7 +10,7 @@ export const constants = {
     MIGRATE_GITHUB_REPO_BOARD_COLUMNS_PATH: "/migrate/github_board/columns",
     GITHUB_REPO_BOARD_COLUMNS_PATH: "GET /projects/{board_id}/columns",
     MIGRATE_GITHUB_COLUMNS_CARD_PATH: "/migrate/github_board/columns/cards",
-    GITHUB_COLUMNS_CARD_PATH: "GET /projects/columns/{column_id}/cards",
+    GITHUB_COLUMNS_CARD_PATH: "GET /projects/columns/{column_id}/cards?per_page={itemsPerPage}&page={pageIndex}",
     // jira
     MIGRATE_JIRA_GET_ISSUE_DETAIL_PATH: "/migrate/jira_issue",
     MIGRATE_JIRA_BULK_UPDATE_PATH: "/migrate/jira_bulk_create",
