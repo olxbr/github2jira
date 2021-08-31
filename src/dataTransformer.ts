@@ -15,7 +15,8 @@ export module DataTransformer {
                 priority = getBugPriority(labels, migrateBody.github.priorities);
             }
 
-            labels = labels.concat(getLabelsFromTitle(issue.title));
+            labels.push(getLabelsFromTitle(issue.title));
+            console.log("Labels: " + labels);
 
             var reporter = null;
             var assignee = null;
@@ -70,8 +71,34 @@ export module DataTransformer {
     }
 
     export function updateJiraIssuesDescription(jiraIssues: Array<any>, githubIssues: Array<any>): Array<any> {
-        let jsonMD = mdTranslator("");
-        return [];
+        let updatedIssues = jiraIssues.map(jiraIssue => {
+            let githubIssue = githubIssues.find(githubIssue => githubIssue.title === jiraIssue.fields.summary);
+            if (!githubIssue || !githubIssue.body || githubIssue.body.length < 1) {
+                return "";
+            }
+            let description: string = githubIssue.body;
+
+            try {
+                let jsonMD = JSON.parse(mdTranslator(description));
+                let updatedIssue = {
+                    key: jiraIssue.key,
+                    fields: {
+                        description: jsonMD
+                    }
+                }
+                return updatedIssue;
+            } catch(err) {
+                let notUpdatedIssue = {
+                    key: jiraIssue.key,
+                    fields: {
+                        description: description
+                    }
+                }
+                return notUpdatedIssue;
+            }
+        });
+
+        return updatedIssues;
     }
 
     function getIssueType(labels: Array<string>, bugTag: string, epicTag: string): string {
@@ -111,8 +138,17 @@ export module DataTransformer {
     }
 
     function getLabelsFromTitle(title: string): Array<string> {
-        let newLabels = [];
-        newLabels = title.match(/(?<=\[).+?(?=\])/g);
+        var newLabels = [];
+        let intoBrackets = title.match(/(?<=\[).+?(?=\])/g);
+        intoBrackets?.forEach((label: string) => {
+            let splittedBySlash = label.split("/");
+            if (splittedBySlash.length > 1) {
+                let trimmed = splittedBySlash.map(notTrimmed => notTrimmed.trim());
+                newLabels.push(trimmed);
+            } else {
+                newLabels.push(label);
+            }
+        });
         return newLabels ? newLabels : [];
     }
 }

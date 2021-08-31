@@ -72,6 +72,17 @@ export module Router {
             response.status(err.response.status).json({ message: err.response.data.message});
         });
 
-        response.status(200).json(jiraIssues);
+        let updatedIssues = DataTransformer.updateJiraIssuesDescription(jiraIssues, githubIssues);
+
+        let newJiraIssues = await Jira.updateIssuesWith(
+            updatedIssues, 
+            request.body.jira.user_email, 
+            request.body.jira.user_api_token, 
+            request.body.jira.project_key
+        ).catch(err => {
+            response.status(err.statusCode).json({message: err.message});
+        }); 
+
+        response.status(200).json(newJiraIssues);
     }
 }

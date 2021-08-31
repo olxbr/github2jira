@@ -17,7 +17,7 @@ export module Github {
         });
     }
 
-    export async function getAllGithubIssuesWith(ownerName: string, repoName: string, githubAuth: string, since: string | void, issueState: string | void): Promise<JSON> {
+    export async function getAllGithubIssuesWith(ownerName: string, repoName: string, githubAuth: string, since: string | void, issueState: string | void): Promise<any> {
         const octokit = new Octokit({ auth: githubAuth});
     
         let response = null, page = 1, result = null, path = constants.GITHUB_GET_REPO_ISSUES_PATH, state = issueState ? issueState : "all";
@@ -63,7 +63,6 @@ export module Github {
                   ]
                 }
             }).catch(err => {
-                console.log(err);
                 throw err;
             });
 

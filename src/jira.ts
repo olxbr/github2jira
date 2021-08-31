@@ -1,6 +1,7 @@
 import { constants } from "./constants";
 import { MigrateRequest } from "./types";
 import JiraClient from "jira-connector";
+import Axios from "axios";
 
 export module Jira {
     export async function getIssueDetailHandler(request: MigrateRequest, response: any) {
@@ -50,6 +51,54 @@ export module Jira {
         } while (response.issues.length == Number(constants.ISSUES_PARAMS_ITEMS_PER_PAGE));
         
         return result;
+    }
+
+    export async function updateIssuesWith(jiraIssues: Array<any>, userEmail: string, apiToken: string, projectKey: string): Promise<any> {
+        const jiraClient = new JiraClient({
+            host: constants.JIRA_HOST,
+                basic_auth: {
+                    email: userEmail,
+                    api_token: apiToken
+                },
+                version: 3
+        });
+
+        let newJiraIssues = Promise.all(jiraIssues.map(async jiraIssue => {
+            if (typeof jiraIssue.fields?.description === 'string') {
+                return;
+            }
+            
+            await Axios({
+                method: "put",
+                url: jiraClient.buildURL("/issue/" + jiraIssue.key + "?notifyUsers=false", 3),
+                auth: {
+                    username: userEmail,
+                    password: apiToken
+                },
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json" 
+                },
+                data: {
+                    key: jiraIssue.key,
+                    fields: {
+                        description: jiraIssue?.fields?.description 
+                    },
+                    properties: []
+                }
+            }).catch(err => {
+                throw {
+                    statusCode: err.response.status,
+                    message: "Something went wrong with " + jiraIssue.key 
+                };
+            });
+
+            return jiraIssue.key;
+        }));
+        
+        return {
+            updatedIssues: (await newJiraIssues)
+        };
     }
 
     async function getIssueDetail(userEmail: string, apiToken: string, issueKey: string): Promise<any> {
