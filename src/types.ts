@@ -28,7 +28,7 @@ export type MigrateBody =  {
     ];
     status_mapping: [
         MigrateMapping
-    ]
+    ] | null;
 };
 
 export type MigrateMapping = {

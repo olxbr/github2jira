@@ -12,7 +12,7 @@ export module Router {
             request.body.github.since, 
             request.body.github.state
         ).then(result => {
-            let jiraIssues = DataTransformer.githubIssuesToJSON(result, request.body, null);
+            let jiraIssues = DataTransformer.githubIssuesToJSON(result, request.body, []);
             response.status(200).json(jiraIssues); 
         }).catch(err => {
             response.status(err.response.status).json({ message: err.response.data.message});
@@ -22,6 +22,7 @@ export module Router {
     export async function migrationJSONHandler(request: MigrateRequest, response: any) {
         if (!request.body.status_mapping) {
             migrationWithoutStatusJSONHandler(request, response);
+            return;
         }
         
         Promise.all(

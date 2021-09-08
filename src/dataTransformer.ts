@@ -4,6 +4,19 @@ import mdTranslator from 'md-to-adf';
 export module DataTransformer {
     export function githubIssuesToJSON(githubIssues: any, migrateBody: MigrateBody, githubColumnsIssues: any): any {
         return githubIssues.map((issue: any) => {
+            var issuesStatus = null;
+            if (githubColumnsIssues.length > 0) {
+                githubColumnsIssues.forEach(column => {
+                    if (column.issues.indexOf(String(issue.number)) >= 0) {
+                        issuesStatus = column.column_name;
+                    } 
+                });
+                
+                if (!issuesStatus) {
+                    return {};
+                }
+            } 
+
             let labelsObjects = (issue.labels as Array<any>)
             var labels = labelsObjects.map((label: any) => {
                 return label.name;
@@ -15,8 +28,7 @@ export module DataTransformer {
                 priority = getBugPriority(labels, migrateBody.github.priorities);
             }
 
-            labels.push(getLabelsFromTitle(issue.title));
-            console.log("Labels: " + labels);
+            labels = labels.concat(getLabelsFromTitle(issue.title));
 
             var reporter = null;
             var assignee = null;
@@ -30,15 +42,6 @@ export module DataTransformer {
                         return user.github == issue.assignee.login;
                     });
                 }
-            }
-
-            var issuesStatus = null;
-            if (githubColumnsIssues) {
-                githubColumnsIssues.forEach(column => {
-                    if (column.issues.indexOf(String(issue.number)) >= 0) {
-                        issuesStatus = column.column_name;
-                    } 
-                });
             }
             
             let issueJSON = {
@@ -57,14 +60,15 @@ export module DataTransformer {
                     description: issue.body ? issue.body : ""
                 },
                 status: {
-                    name: issuesStatus ? issuesStatus : "Backlog",
+                    name: issuesStatus ? issuesStatus : issue.state == "closed" ? "Done" : "Backlog",
                 },
                 priority: {
                     name: priority
                 },
                 created: issue.created_at,
                 resolved: issue.closed_at,
-                resolution: issue.state == "closed" ? "Done" : ""
+                resolution: issue.state == "closed" ? "Done" : "",
+                github_issue: issue.html_url
             }
             return issueJSON;
         });
@@ -144,7 +148,7 @@ export module DataTransformer {
             let splittedBySlash = label.split("/");
             if (splittedBySlash.length > 1) {
                 let trimmed = splittedBySlash.map(notTrimmed => notTrimmed.trim());
-                newLabels.push(trimmed);
+                newLabels = newLabels.concat(trimmed);
             } else {
                 newLabels.push(label);
             }
