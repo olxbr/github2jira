@@ -9,6 +9,7 @@ export const constants = {
     // jira
     MIGRATE_JIRA_GET_ISSUE_DETAIL_PATH: "/migrate/jira_issue",
     MIGRATE_JIRA_BULK_UPDATE_PATH: "/migrate/jira_bulk_update",
+    MIGRATE_JIRA_ISSUE_LINKING_PARENT_PATH: "/migrate/jira_issue_link_parent",
     JIRA_HOST: "olxbr.atlassian.net",
     JIRA_ALL_ISSUES_PART_I: "/jira/software/c/projects/",
     JIRA_ALL_ISSUES_PART_II: "/issues/?filter=allissues"

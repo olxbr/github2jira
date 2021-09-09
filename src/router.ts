@@ -86,4 +86,16 @@ export module Router {
 
         response.status(200).json(newJiraIssues);
     }
+
+    export async function updateJiraIssueLinkingParent(request: MigrateRequest, response: any) {
+        let jiraIssues = await Jira.getAllIssuesFrom(
+            request.body.jira.user_email,
+            request.body.jira.user_api_token,
+            request.body.jira.project_key
+        ).catch(err => {
+            response.status(err.statusCode).json({message: err.body});
+        })
+
+        let childrenIssues = DataTransformer.jiraChildrenIssues(jiraIssues, request.body.github.parent_ref);
+    }
 }

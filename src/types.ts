@@ -15,7 +15,8 @@ export type MigrateBody =  {
             high: string;
             medium: string;
             low: string;
-        }
+        };
+        parent_ref: [ string ];
     }; 
     jira: {
         user_email: string;

@@ -105,6 +105,26 @@ export module DataTransformer {
         return updatedIssues;
     }
 
+    export function jiraChildrenIssues(issues: Array<any>, tags: Array<any>): Array<any> {
+        let childrenIssues = []
+        issues.forEach(issue => {
+            let regex = RegExp("(?<=" + tags.join("|") + ").[a-z]+[:.].*?(?=\\s)", "i");
+            let result = regex.exec(issue.fields.description);
+            if (result?.length > 0) {
+                let string = result[0].trim().replace("##", "").trim();
+                if (string.match(/(?=https:\/\/github.com)/i)) {
+                    childrenIssues.push({
+                        key: issue.key,
+                        parent_git_url: string,
+                        parent_key: ""
+                    });
+                }
+            }
+        });
+        console.log(childrenIssues);
+        return childrenIssues;
+    }
+
     function getIssueType(labels: Array<string>, bugTag: string, epicTag: string): string {
     var issueType = "Story";
             if (bugTag) {
