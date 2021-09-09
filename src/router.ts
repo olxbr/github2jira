@@ -75,16 +75,15 @@ export module Router {
 
         let updatedIssues = DataTransformer.updateJiraIssuesDescription(jiraIssues, githubIssues);
 
-        let newJiraIssues = await Jira.updateIssuesWith(
+        let bodyResponse = await Jira.updateIssuesWith(
             updatedIssues, 
             request.body.jira.user_email, 
-            request.body.jira.user_api_token, 
-            request.body.jira.project_key
+            request.body.jira.user_api_token
         ).catch(err => {
             response.status(err.statusCode).json({message: err.message});
         }); 
 
-        response.status(200).json(newJiraIssues);
+        response.status(200).json(bodyResponse);
     }
 
     export async function updateJiraIssueLinkingParent(request: MigrateRequest, response: any) {
@@ -101,8 +100,7 @@ export module Router {
         await Jira.linkingParentsAndChildrensWithfunction(
             childrenIssues, 
             request.body.jira.user_email, 
-            request.body.jira.user_api_token, 
-            request.body.jira.project_key
+            request.body.jira.user_api_token
         ).catch(err => {
             response.status(err.statusCode).json({message: err.message});
         }); 

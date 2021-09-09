@@ -112,12 +112,13 @@ export module DataTransformer {
             let result = regex.exec(issue.fields.description);
             if (result?.length > 0) {
                 let string = result[0].trim().replace("##", "").trim();
+                let url = string.indexOf(".") != 0 ? string : string.substr(1);
                 if (string.match(/(?=https:\/\/github.com)/i)) {
-                    let parentIssue = issues.find(jiraIssue => jiraIssue.fields.customfield_10154 == string);
+                    let parentIssue = issues.find(jiraIssue => jiraIssue.fields.customfield_10154 == url);
                     
                     childrenIssues.push({
                         key: issue.key,
-                        parent_git_url: string,
+                        parent_git_url: url,
                         parent_key: parentIssue ? parentIssue.key : ""
                     });
                 }

@@ -2,6 +2,8 @@ import { constants } from "./constants";
 import { MigrateRequest } from "./types";
 import JiraClient from "jira-connector";
 import Axios from "axios";
+import rateLimit from 'axios-rate-limit';
+import axios from "axios";
 
 export module Jira {
     export async function getIssueDetailHandler(request: MigrateRequest, response: any) {
@@ -53,7 +55,7 @@ export module Jira {
         return result;
     }
 
-    export async function updateIssuesWith(jiraIssues: Array<any>, userEmail: string, apiToken: string, projectKey: string): Promise<any> {
+    export async function updateIssuesWith(jiraIssues: Array<any>, userEmail: string, apiToken: string): Promise<any> {
         const jiraClient = new JiraClient({
             host: constants.JIRA_HOST,
                 basic_auth: {
@@ -101,7 +103,7 @@ export module Jira {
         };
     }
 
-    export async function linkingParentsAndChildrensWithfunction(jiraIssues: Array<any>, userEmail: string, apiToken: string, projectKey: string): Promise<any> {
+    export async function linkingParentsAndChildrensWithfunction(jiraIssues: Array<any>, userEmail: string, apiToken: string): Promise<any> {
         const jiraClient = new JiraClient({
             host: constants.JIRA_HOST,
                 basic_auth: {
@@ -110,13 +112,20 @@ export module Jira {
                 },
                 version: 3
         });
+        let client = rateLimit(axios.create(), { maxRPS: 3 });
 
-        let teste = [jiraIssues[500]];
-        console.log(teste)
-        let newJiraIssues = Promise.all(teste.map(async jiraIssue => {
-            await Axios({
-                method: "post",
-                url: jiraClient.buildURL("/issueLink", 2),
+        let bodyResponse = {
+            not_updated: {
+                issues: [],
+                reason: "not an epic"
+            },
+            updated: []
+        }
+
+        await Promise.all(jiraIssues.map(async jiraIssue => {
+            await client.request({
+                method: "put",
+                url: jiraClient.buildURL("/issue/" + jiraIssue.key + "?notifyUsers=false", 3),
                 auth: {
                     username: userEmail,
                     password: apiToken
@@ -126,23 +135,27 @@ export module Jira {
                     "Content-Type": "application/json" 
                 },
                 data: {
-                    type: { name: "Parent" },
-                    outwartdIssue: { key: jiraIssue.parent_key },
-                    inwardIssue: { key: jiraIssue.key }
+                    key: jiraIssue.key,
+                    fields: {
+                        customfield_10014: jiraIssue.parent_key 
+                    },
+                    properties: []
                 }
             }).catch(err => {
-                throw {
-                    statusCode: err.response.status,
-                    message: "Something went wrong with " + jiraIssue.key 
-                };
+                if (err?.response?.status != 400) {
+                    throw {
+                        statusCode: err.response.status,
+                        message: "Something went wrong with " + jiraIssue.key 
+                    };
+                }   
+                bodyResponse.not_updated.issues.push(jiraIssue.key);
+                return;
             });
-
+            bodyResponse.updated.push(jiraIssue.key);
             return jiraIssue.key;
         }));
         
-        return {
-            updatedIssues: (await newJiraIssues)
-        };
+        return bodyResponse;
     }
 
     async function getIssueDetail(userEmail: string, apiToken: string, issueKey: string): Promise<any> {
