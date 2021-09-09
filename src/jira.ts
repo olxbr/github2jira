@@ -36,7 +36,8 @@ export module Jira {
                 startAt: page,
                 fields: [
                     "summary",
-                    "description"
+                    "description",
+                    "customfield_10154" //Github Issue
                 ]
             }).catch(err => {
                 throw JSON.parse(err);
@@ -49,7 +50,6 @@ export module Jira {
             }
             page = page + range;
         } while (response.issues.length == Number(constants.ISSUES_PARAMS_ITEMS_PER_PAGE));
-        
         return result;
     }
 
@@ -85,6 +85,50 @@ export module Jira {
                         description: jiraIssue?.fields?.description 
                     },
                     properties: []
+                }
+            }).catch(err => {
+                throw {
+                    statusCode: err.response.status,
+                    message: "Something went wrong with " + jiraIssue.key 
+                };
+            });
+
+            return jiraIssue.key;
+        }));
+        
+        return {
+            updatedIssues: (await newJiraIssues)
+        };
+    }
+
+    export async function linkingParentsAndChildrensWithfunction(jiraIssues: Array<any>, userEmail: string, apiToken: string, projectKey: string): Promise<any> {
+        const jiraClient = new JiraClient({
+            host: constants.JIRA_HOST,
+                basic_auth: {
+                    email: userEmail,
+                    api_token: apiToken
+                },
+                version: 3
+        });
+
+        let teste = [jiraIssues[500]];
+        console.log(teste)
+        let newJiraIssues = Promise.all(teste.map(async jiraIssue => {
+            await Axios({
+                method: "post",
+                url: jiraClient.buildURL("/issueLink", 2),
+                auth: {
+                    username: userEmail,
+                    password: apiToken
+                },
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json" 
+                },
+                data: {
+                    type: { name: "Parent" },
+                    outwartdIssue: { key: jiraIssue.parent_key },
+                    inwardIssue: { key: jiraIssue.key }
                 }
             }).catch(err => {
                 throw {

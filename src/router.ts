@@ -97,5 +97,16 @@ export module Router {
         })
 
         let childrenIssues = DataTransformer.jiraChildrenIssues(jiraIssues, request.body.github.parent_ref);
+        
+        await Jira.linkingParentsAndChildrensWithfunction(
+            childrenIssues, 
+            request.body.jira.user_email, 
+            request.body.jira.user_api_token, 
+            request.body.jira.project_key
+        ).catch(err => {
+            response.status(err.statusCode).json({message: err.message});
+        }); 
+
+        response.status(200).json(childrenIssues);
     }
 }

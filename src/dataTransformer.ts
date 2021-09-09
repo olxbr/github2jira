@@ -113,15 +113,16 @@ export module DataTransformer {
             if (result?.length > 0) {
                 let string = result[0].trim().replace("##", "").trim();
                 if (string.match(/(?=https:\/\/github.com)/i)) {
+                    let parentIssue = issues.find(jiraIssue => jiraIssue.fields.customfield_10154 == string);
+                    
                     childrenIssues.push({
                         key: issue.key,
                         parent_git_url: string,
-                        parent_key: ""
+                        parent_key: parentIssue ? parentIssue.key : ""
                     });
                 }
             }
         });
-        console.log(childrenIssues);
         return childrenIssues;
     }
 
