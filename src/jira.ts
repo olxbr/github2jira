@@ -64,13 +64,30 @@ export module Jira {
                 },
                 version: 3
         });
+        let client = rateLimit(axios.create(), { maxRPS: 3 });
 
-        let newJiraIssues = Promise.all(jiraIssues.map(async jiraIssue => {
-            if (typeof jiraIssue.fields?.description === 'string') {
+        let bodyResponse = {
+            total_issues: jiraIssues.length,  
+            not_updated: {
+                reason: "Something goes wrong!",
+                total: 0,
+                issues: []
+            },
+            updated: {
+                total: 0,
+                issues: []
+            }
+        }
+
+        await Promise.all(jiraIssues.map(async jiraIssue => {
+            if (typeof jiraIssue.fields?.description === 'string' || typeof jiraIssue.key != 'string') {
+                console.log("######## FALL START");
+                console.log(jiraIssue);
+                console.log("######## FALL END");
                 return;
             }
             
-            await Axios({
+            await client.request({
                 method: "put",
                 url: jiraClient.buildURL("/issue/" + jiraIssue.key + "?notifyUsers=false", 3),
                 auth: {
@@ -88,19 +105,32 @@ export module Jira {
                     },
                     properties: []
                 }
+            }).then(result => {
+                bodyResponse.updated.issues.push(jiraIssue.key);
+                console.log("######## SUCCESS")
             }).catch(err => {
-                throw {
-                    statusCode: err.response.status,
-                    message: "Something went wrong with " + jiraIssue.key 
-                };
+                console.log("######## CATCH START");
+                if (err?.response?.status != 400) {
+                    console.log(jiraIssue);
+                    console.log(err?.response);
+                    // throw {
+                    //     statusCode: err.response.status,
+                    //     message: "Something went wrong with " + jiraIssue.key 
+                    // };
+                }   
+                bodyResponse.not_updated.issues.push({
+                    statusCode: err?.response?.status,
+                    key: jiraIssue.key
+                });
+                console.log("######## CATCH END");
+                return;
             });
-
             return jiraIssue.key;
         }));
-        
-        return {
-            updatedIssues: (await newJiraIssues)
-        };
+
+        bodyResponse.not_updated.total = bodyResponse.not_updated.issues.length;
+        bodyResponse.updated.total = bodyResponse.updated.issues.length;
+        return bodyResponse;
     }
 
     export async function linkingParentsAndChildrensWithfunction(jiraIssues: Array<any>, userEmail: string, apiToken: string): Promise<any> {
@@ -115,11 +145,17 @@ export module Jira {
         let client = rateLimit(axios.create(), { maxRPS: 3 });
 
         let bodyResponse = {
+            total_issues: jiraIssues.length,  
             not_updated: {
-                issues: [],
-                reason: "not an epic"
+                reason: "Reference is not an epic!",
+                total: 0,
+                not_an_epic: [],
+                issues: []
             },
-            updated: []
+            updated: {
+                total: 0,
+                issues: []
+            }
         }
 
         await Promise.all(jiraIssues.map(async jiraIssue => {
@@ -141,6 +177,8 @@ export module Jira {
                     },
                     properties: []
                 }
+            }).then(result => {
+                bodyResponse.updated.issues.push(jiraIssue.key);
             }).catch(err => {
                 if (err?.response?.status != 400) {
                     throw {
@@ -149,12 +187,14 @@ export module Jira {
                     };
                 }   
                 bodyResponse.not_updated.issues.push(jiraIssue.key);
+                bodyResponse.not_updated.not_an_epic.push(jiraIssue.parent_key);
                 return;
             });
-            bodyResponse.updated.push(jiraIssue.key);
             return jiraIssue.key;
         }));
-        
+
+        bodyResponse.not_updated.total = bodyResponse.not_updated.issues.length;
+        bodyResponse.updated.total = bodyResponse.updated.issues.length;
         return bodyResponse;
     }
 
