@@ -65,6 +65,9 @@ This is not a pet project and it was my first node/typescritp adventure! So, fee
     - [body-parser 1.19.0](https://www.npmjs.com/package/body-parser)
     - [express 4.17.1](https://www.npmjs.com/package/express)
     - [jira-connector 3.1.0](https://www.npmjs.com/package/jira-connector)
+    - [axios 0.21.4](https://www.npmjs.com/package/axios)
+    - [axios-rate-limit 1.3.0](https://www.npmjs.com/package/axios-rate-limit)
+    - [md-to-adf 0.6.4](https://www.npmjs.com/package/md-to-adf)
 
 ## How to use
 
