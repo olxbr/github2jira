@@ -3,7 +3,7 @@ import mdTranslator from 'md-to-adf';
 
 export module DataTransformer {
     export function githubIssuesToJSON(githubIssues: any, migrateBody: MigrateBody, githubColumnsIssues: any): any {
-        return githubIssues.map((issue: any) => {
+        let jiraIssues = githubIssues.map((issue: any) => {
             var issuesStatus = null;
             if (githubColumnsIssues.length > 0) {
                 githubColumnsIssues.forEach(column => {
@@ -71,7 +71,11 @@ export module DataTransformer {
                 github_issue: issue.html_url
             }
             return issueJSON;
-        });
+        }).filter((issue: any) => {
+            return typeof issue.fields != 'undefined';
+        });;
+
+        return jiraIssues; 
     }
 
     export function updateJiraIssuesDescription(jiraIssues: Array<any>, githubIssues: Array<any>): Array<any> {
