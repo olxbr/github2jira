@@ -15,9 +15,8 @@ This is not a pet project and it was my first node/typescritp adventure! So, fee
 
 - [x]  Process Github's data into JIRA's data
     - [x]  Github's Bug label turn into a Bug issue on Jira
-    - [ ]  Github's issues parenthood/relationship created on Jira
-        - [ ]  Epic
-        - [ ]  Subtask
+    - [X]  Github's issues parenthood/relationship created on Jira
+        - [X]  Epic
     - [x]  User Mapping from github to Jira
         - [x]  Assignee property
         - [x]  Reporter property
@@ -26,18 +25,13 @@ This is not a pet project and it was my first node/typescritp adventure! So, fee
         - [x]  Created at
         - [x]  Resolved at
         - [x]  Closed or Open
-        - [ ]  Board current status
-    - [ ]  Create sub-task using description's checklist. 
+        - [X]  Board current status 
 
 - [x]  Export data
     - [x]  JSON
     - [ ]  CSV
 
 - [ ]  Migrate data to Jira (NOTE: Sadly this feature was note possible due JIRA's API limitations.) 
-
-- [ ]  Sincronize Jira's issues with Github updates (current status)
-    - [ ] update columns ands status
-    - [ ] create new issues
 
 ## Installation
 
@@ -71,6 +65,9 @@ This is not a pet project and it was my first node/typescritp adventure! So, fee
     - [body-parser 1.19.0](https://www.npmjs.com/package/body-parser)
     - [express 4.17.1](https://www.npmjs.com/package/express)
     - [jira-connector 3.1.0](https://www.npmjs.com/package/jira-connector)
+    - [axios 0.21.4](https://www.npmjs.com/package/axios)
+    - [axios-rate-limit 1.3.0](https://www.npmjs.com/package/axios-rate-limit)
+    - [md-to-adf 0.6.4](https://www.npmjs.com/package/md-to-adf)
 
 ## How to use
 
@@ -79,6 +76,9 @@ This is not a pet project and it was my first node/typescritp adventure! So, fee
   npm run dev
   ```
 2. Just use it. [DOCUMENTATION](https://documenter.getpostman.com/view/797179/Tzz7Mcq9) 
+3. Create a Jira API TOKEN [JIRA](https://id.atlassian.com/manage-profile/security/api-tokens) 
+4. Create a Github API TOKEN [GITHUB](https://github.com/settings/tokens) 
+    a. Important to check all REPO, ADMIN:ORG and USER premissions. And also Read permissions for ADMIN:REPO_HOOK and ADMIN:PUBLIC_KEY.
 
 ### POST Migrate
 
